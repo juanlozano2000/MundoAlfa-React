@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -7,6 +8,7 @@ import FiltersBar from "../../components/FiltersBar";
 type Product = {
   id: number; base_name: string; brand: string | null; image: string | null;
   sku: string | null; min_price: number | null; max_price: number | null; variants: number;
+  category: string | null;
 };
 
 export default function Explorar() {
@@ -42,6 +44,7 @@ export default function Explorar() {
 
   // fetch de detalle
   useEffect(() => {
+    
     if (pid) {
       fetch(`/api/products/${pid}`).then(r => r.json()).then(setDetail);
       const p = new URLSearchParams(qs); p.set("pid", String(pid));
@@ -54,6 +57,15 @@ export default function Explorar() {
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
+      <Link
+        href="/"
+        className="mb-4 inline-block rounded-lg border border-gray-400 bg-white px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-600 hover:text-gray-900 transition"
+      >
+        ← Volver
+      </Link>
+
+
+
       <h1 className="text-2xl font-semibold mb-2">Explorar productos</h1>
       <FiltersBar value={filters} onChange={setFilters} />
 
@@ -114,10 +126,9 @@ export default function Explorar() {
         <div className="grid gap-3">
           {rows.map((r) => {
             const price =
-              r.min_price == null ? "—"
-              : r.min_price === r.max_price
-                ? `${Number(r.min_price).toLocaleString("es-AR")} ARS`
-                : `${Number(r.min_price).toLocaleString("es-AR")}–${Number(r.max_price).toLocaleString("es-AR")} ARS`;
+              r.max_price == null
+                ? "—"
+                : `${Number(r.max_price).toLocaleString("es-AR")} ARS`;
             return (
               <article key={r.id} className="border rounded-xl p-4 hover:shadow-sm transition">
                 <div className="flex gap-4">
@@ -130,17 +141,18 @@ export default function Explorar() {
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold">{r.base_name}</h3>
                     <p className="text-sm text-neutral-600">Marca: {r.brand ?? "—"}</p>
-                    <p className="mt-1 text-sm"><b>Precio ref.:</b> {price}</p>
+                    <p className="mt-1 text-sm"><b>Precio:</b> {price}</p>
+                    <p className="mt-1 text-sm"><b>Categoría:</b> {r.category ?? "—"}</p>
                     <p className="text-xs text-neutral-500">Variantes compatibles: {r.variants}</p>
                   </div>
-                  <div className="self-center">
-                    <button
-                      className="rounded-lg bg-red-700 text-white text-sm px-4 py-2 hover:bg-red-800"
-                      onClick={() => setPid(r.id)}
-                    >
-                      Ver detalle
-                    </button>
-                  </div>
+                </div>
+                <div className="self-center flex justify-end">
+                  <button
+                    className="rounded-lg bg-red-700 text-white text-sm px-4 py-2 hover:bg-red-800 whitespace-nowrap"
+                    onClick={() => setPid(r.id)}
+                  >
+                    Ver detalle
+                  </button>
                 </div>
               </article>
             );
