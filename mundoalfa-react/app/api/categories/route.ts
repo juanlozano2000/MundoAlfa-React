@@ -1,5 +1,5 @@
 export const runtime = "nodejs";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { db } from "@/lib/db";
 
 const stmtForModel = db.prepare(`
@@ -21,8 +21,8 @@ const stmtAll = db.prepare(`
   ORDER BY name
 `);
 
-export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
+export async function GET(request: NextRequest, context: { params: any }) {
+  const { searchParams } = new URL(request.url);
   const rawModel = (searchParams.get("model") || "").trim();
   const model = rawModel === "" || rawModel.toLowerCase() === "(todos los modelos)"
     ? null

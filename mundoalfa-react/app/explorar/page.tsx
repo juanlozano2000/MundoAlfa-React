@@ -29,6 +29,7 @@ export default function Explorar() {
   const [rows, setRows] = useState<Product[]>([]);
   const [pid, setPid] = useState<number | null>(sp.get("pid") ? Number(sp.get("pid")) : null);
   const [detail, setDetail] = useState<{ product: Product } | null>(null);
+  const [loading, setLoading] = useState(false); // 👈 nuevo estado
 
   // querystring de filtros
   const qs = useMemo(() => {
@@ -41,7 +42,11 @@ export default function Explorar() {
 
   // fetch de productos
   useEffect(() => {
-    fetch(`/api/products?${qs}`).then(r => r.json()).then(setRows);
+    setLoading(true); // 👈 empieza carga
+    fetch(`/api/products?${qs}`)
+      .then(r => r.json())
+      .then(setRows)
+      .finally(() => setLoading(false)); // 👈 termina carga
     // limpiar detalle al cambiar filtros
     setPid(null);
     setDetail(null);
@@ -52,7 +57,11 @@ export default function Explorar() {
   // fetch de detalle
   useEffect(() => {
     if (pid) {
-      fetch(`/api/products/${pid}`).then(r => r.json()).then(setDetail);
+      setLoading(true); // 👈 empieza carga
+      fetch(`/api/products/${pid}`)
+        .then(r => r.json())
+        .then(setDetail)
+        .finally(() => setLoading(false)); // 👈 termina carga
       const p = new URLSearchParams(qs); p.set("pid", String(pid));
       router.replace(`/explorar?${p.toString()}`);
     } else {
@@ -60,6 +69,43 @@ export default function Explorar() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pid]);
+
+  // Skeleton para listado
+  function ListSkeleton() {
+    return (
+      <div className="grid gap-3">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="border rounded-xl p-4 animate-pulse flex gap-4">
+            <div className="w-24 h-24 bg-gray-200 rounded" />
+            <div className="flex-1 space-y-2">
+              <div className="h-5 bg-gray-200 rounded w-1/2" />
+              <div className="h-4 bg-gray-200 rounded w-1/3" />
+              <div className="h-4 bg-gray-200 rounded w-1/4" />
+              <div className="h-4 bg-gray-200 rounded w-1/3" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Skeleton para detalle
+  function DetailSkeleton() {
+    return (
+      <section className="mb-6 border rounded-xl p-4 animate-pulse">
+        <div className="flex gap-6">
+          <div className="w-40 h-40 bg-gray-200 rounded" />
+          <div className="flex-1 space-y-3">
+            <div className="h-6 bg-gray-200 rounded w-1/2" />
+            <div className="h-4 bg-gray-200 rounded w-1/3" />
+            <div className="h-4 bg-gray-200 rounded w-1/4" />
+            <div className="h-4 bg-gray-200 rounded w-1/3" />
+            <div className="h-4 bg-gray-200 rounded w-2/3" />
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8">
@@ -74,7 +120,8 @@ export default function Explorar() {
       <FiltersBar value={filters} onChange={setFilters} />
 
       {/* Detalle inline (sin compatibilidades) */}
-      {detail && (
+      {loading && pid && <DetailSkeleton />}
+      {!loading && detail && (
         <section className="mb-6 border rounded-xl p-4">
           <div className="flex gap-6">
             <div className="w-40 shrink-0">
@@ -106,7 +153,9 @@ export default function Explorar() {
       )}
 
       {/* Listado */}
-      {rows.length === 0 ? (
+      {loading && !pid ? (
+        <ListSkeleton />
+      ) : rows.length === 0 ? (
         <p className="text-neutral-600">No hay resultados.</p>
       ) : (
         <div className="grid gap-3">

@@ -14,7 +14,8 @@ const stmt = db.prepare(`
   WHERE p.id = ?
 `);
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
-  const row = stmt.get(Number(params.id));
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const row = stmt.get(Number(id));
   return NextResponse.json({ product: row }, { headers: { "Cache-Control": "no-store" } });
 }
