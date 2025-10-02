@@ -5,5 +5,6 @@ import { db } from "@/lib/db";
 const stmt = db.prepare(`SELECT id, name FROM models ORDER BY name`);
 
 export async function GET() {
-  return NextResponse.json(stmt.all(), { headers: { "Cache-Control": "no-store" } });
+  const rows = stmt.all();
+  return NextResponse.json(rows, { headers: { "Cache-Control": "no-store" } });
 }
