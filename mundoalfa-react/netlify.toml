@@ -4,9 +4,7 @@
   publish = ".next"
 
 [functions]
-  # Como tu config usa [build].base = "mundoalfa-react",
-  # referenciá el archivo desde esa carpeta base:
-  included_files = ["lib/mundoAlfa.db"]
+  included_files = ["data/mundoAlfa.db"]  # 👈 acá
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
