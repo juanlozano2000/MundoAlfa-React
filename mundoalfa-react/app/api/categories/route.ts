@@ -21,7 +21,7 @@ const stmtAll = db.prepare(`
   ORDER BY name
 `);
 
-export async function GET(request: NextRequest, context: { params: any }) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const rawModel = (searchParams.get("model") || "").trim();
   const model = rawModel === "" || rawModel.toLowerCase() === "(todos los modelos)"
