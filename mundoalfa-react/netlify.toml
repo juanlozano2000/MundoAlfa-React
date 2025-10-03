@@ -3,9 +3,10 @@
   command = "npm run build"
   publish = ".next"
 
+[functions]
+  # Como tu config usa [build].base = "mundoalfa-react",
+  # referenciá el archivo desde esa carpeta base:
+  included_files = ["lib/mundoAlfa.db"]
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Si tu API lee un archivo SQLite en runtime, incluilo en la función:
-[[functions]]
-  included_files = ["mundoalfa-react/lib/mundoAlfa.db"]
