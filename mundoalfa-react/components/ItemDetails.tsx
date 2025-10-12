@@ -19,25 +19,34 @@ export default function ItemDetails({ product }: { product: Product }) {
 
   return (
     <section className="mb-6 border rounded-xl p-4">
-      <div className="flex gap-6">
-        <div className="w-40 shrink-0">
+      {/* Título primero en mobile */}
+      <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-2">{product.base_name}</h2>
+
+      {/* En mobile: una columna (imagen luego detalles). En md+: 2 columnas */}
+      <div className="md:flex md:items-start md:gap-6">
+        {/* Foto + SKU */}
+        <div className="w-full md:w-40 md:shrink-0">
           {product.image ? (
             <img
               src={`/images/${product.image}`}
-              alt=""
-              className="w-40 h-40 object-contain border rounded"
+              alt={product.base_name}
+              className="w-full max-w-[14rem] h-52 md:max-w-[10rem] md:h-40 object-contain border rounded mx-auto"
             />
           ) : (
-            <div className="w-40 h-40 grid place-items-center border rounded text-sm text-neutral-500">
+            <div className="w-full max-w-[14rem] h-52 md:max-w-[10rem] md:h-40 mx-auto grid place-items-center border rounded text-sm text-neutral-500">
               Sin imagen
             </div>
           )}
-          <p className="text-xs text-neutral-500 mt-2">{product.sku ?? "—"}</p>
+          <p className="text-xs text-neutral-500 mt-2 text-center md:text-left">{product.sku ?? "—"}</p>
         </div>
-        <div className="flex-1">
-          <h2 className="text-xl font-semibold">{product.base_name}</h2>
+
+        {/* Resto de la información */}
+        <div className="flex-1 mt-3 md:mt-0">
           <p className="text-sm text-neutral-600">
-            Marca: {product.brand ?? "—"} · Categoría: {product.category ?? "—"}
+            Marca: {product.brand ?? "—"}
+          </p>
+          <p className="text-sm text-neutral-600">
+            Categoría: {product.category ?? "—"}
           </p>
           <div className="mt-2 text-sm">
             <p>

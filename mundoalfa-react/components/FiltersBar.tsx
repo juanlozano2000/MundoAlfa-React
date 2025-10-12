@@ -30,7 +30,7 @@ export default function FiltersBar({
 
       {/* //Buscador de nombre */}
       <input
-        className="border rounded px-3 py-2 w-100"
+        className="border rounded px-3 py-2 w-100 focus:border-red-700 focus:ring-1 focus:ring-red-200 focus:outline-none"
         placeholder="Buscar (nombre o marca)"
         value={value.q}
         onChange={(e) => onChange({ ...value, q: e.target.value })}
@@ -38,7 +38,7 @@ export default function FiltersBar({
 
       {/* //Select de Modelo*/}
       <select
-        className="border rounded px-3 py-2 w-100"
+        className={`border rounded px-3 py-2 w-100 ${value.model ? "bg-gray-100" : "bg-white"} focus:border-red-700 focus:ring-1 focus:ring-red-200 focus:outline-none`}
         value={value.model ?? ""}
         onChange={(e) => onChange({
           ...value,
@@ -46,7 +46,7 @@ export default function FiltersBar({
           category: null, // reset categoría al cambiar modelo
         })}
       >
-        <option value="">(Todos los modelos)</option>
+        <option value="">(Seleccioná el modelo)</option>
         {models.map(m => (
           <option key={m.id} value={m.name}>{m.name}</option>
         ))}
@@ -54,7 +54,13 @@ export default function FiltersBar({
 
       {/* //Select de Categoría */}
       <select
-        className="border rounded px-3 py-2 w-100"
+        className={`border rounded px-3 py-2 w-100 ${
+          cats.length === 0
+            ? "bg-gray-50 text-neutral-500 cursor-not-allowed"
+            : value.category !== null
+              ? "bg-gray-100"
+              : "bg-white"
+        } focus:border-red-700 focus:ring-1 focus:ring-red-200 focus:outline-none`}
         value={value.category !== null ? String(value.category) : ""}
         onChange={(e) =>
           onChange({
@@ -64,7 +70,7 @@ export default function FiltersBar({
         }
         disabled={cats.length === 0}
       >
-        <option value="">{`(Todas las categorías)`}</option>
+        <option value="">{`(Seleccioná la categoría)`}</option>
         {cats.map(c => (
           <option key={c.id} value={c.id}>{c.name}</option>
         ))}
