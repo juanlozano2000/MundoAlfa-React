@@ -30,7 +30,7 @@ export default function FiltersBar({
 
       {/* //Buscador de nombre */}
       <input
-        className="border rounded px-3 py-2 w-64"
+        className="border rounded px-3 py-2 w-100"
         placeholder="Buscar (nombre o marca)"
         value={value.q}
         onChange={(e) => onChange({ ...value, q: e.target.value })}
@@ -38,7 +38,7 @@ export default function FiltersBar({
 
       {/* //Select de Modelo*/}
       <select
-        className="border rounded px-3 py-2"
+        className="border rounded px-3 py-2 w-100"
         value={value.model ?? ""}
         onChange={(e) => onChange({
           ...value,
@@ -54,7 +54,7 @@ export default function FiltersBar({
 
       {/* //Select de Categoría */}
       <select
-        className="border rounded px-3 py-2"
+        className="border rounded px-3 py-2 w-100"
         value={value.category !== null ? String(value.category) : ""}
         onChange={(e) =>
           onChange({
