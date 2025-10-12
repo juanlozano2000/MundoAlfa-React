@@ -27,9 +27,7 @@ export default function Explorar() {
     q: sp.get("q") || "",
   });
   const [rows, setRows] = useState<Product[]>([]);
-  const [pid, setPid] = useState<number | null>(sp.get("pid") ? Number(sp.get("pid")) : null);
-  const [detail, setDetail] = useState<{ product: Product } | null>(null);
-  const [loading, setLoading] = useState(false); // 👈 nuevo estado
+  const [loading, setLoading] = useState(false);
 
   // querystring de filtros
   const qs = useMemo(() => {
@@ -42,33 +40,16 @@ export default function Explorar() {
 
   // fetch de productos
   useEffect(() => {
-    setLoading(true); // 👈 empieza carga
+    setLoading(true);
     fetch(`/api/products?${qs}`)
       .then(r => r.json())
       .then(setRows)
-      .finally(() => setLoading(false)); // 👈 termina carga
-    // limpiar detalle al cambiar filtros
-    setPid(null);
-    setDetail(null);
+      .finally(() => setLoading(false));
     router.replace(`/explorar?${qs}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qs]);
 
-  // fetch de detalle
-  useEffect(() => {
-    if (pid) {
-      setLoading(true); // 👈 empieza carga
-      fetch(`/api/products/${pid}`)
-        .then(r => r.json())
-        .then(setDetail)
-        .finally(() => setLoading(false)); // 👈 termina carga
-      const p = new URLSearchParams(qs); p.set("pid", String(pid));
-      router.replace(`/explorar?${p.toString()}`);
-    } else {
-      router.replace(`/explorar?${qs}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pid]);
+  // Eliminado: detalle inline y query param pid. Ahora detalle vive en /product/[id]
 
   // Skeleton para listado
   function ListSkeleton() {
@@ -119,41 +100,10 @@ export default function Explorar() {
       <h1 className="text-2xl font-semibold mb-2">Explorar productos</h1>
       <FiltersBar value={filters} onChange={setFilters} />
 
-      {/* Detalle inline (sin compatibilidades) */}
-      {loading && pid && <DetailSkeleton />}
-      {!loading && detail && (
-        <section className="mb-6 border rounded-xl p-4">
-          <div className="flex gap-6">
-            <div className="w-40 shrink-0">
-              {detail.product.image
-                ? <img src={`/images/${detail.product.image}`} alt="" className="w-40 h-40 object-contain border rounded" />
-                : <div className="w-40 h-40 grid place-items-center border rounded text-sm text-neutral-500">Sin imagen</div>}
-              <p className="text-xs text-neutral-500 mt-2">{detail.product.sku ?? "—"}</p>
-            </div>
-            <div className="flex-1">
-              <h2 className="text-xl font-semibold">{detail.product.base_name}</h2>
-              <p className="text-sm text-neutral-600">
-                Marca: {detail.product.brand ?? "—"} · Categoría: {detail.product.category ?? "—"}
-              </p>
-              <div className="mt-2 text-sm">
-                <p><b>Modelo:</b> {detail.product.model ?? "—"}</p>
-                <p><b>Precio:</b>{" "}
-                  {detail.product.price != null
-                    ? `${Number(detail.product.price).toLocaleString("es-AR")} ${detail.product.currency ?? "ARS"}`
-                    : "—"}
-                </p>
-              </div>
-              {detail.product.description && (
-                <div className="mt-3 text-sm">{detail.product.description}</div>
-              )}
-            </div>
-            <button className="self-start text-sm text-red-700" onClick={() => setPid(null)}>↩ Volver</button>
-          </div>
-        </section>
-      )}
+      {/* Detalle inline eliminado: ahora se navega a /product/[id] */}
 
       {/* Listado */}
-      {loading && !pid ? (
+      {loading ? (
         <ListSkeleton />
       ) : rows.length === 0 ? (
         <p className="text-neutral-600">No hay resultados.</p>
@@ -181,12 +131,12 @@ export default function Explorar() {
                   </div>
                 </div>
                 <div className="self-center ml-auto shrink-0 flex justify-start">
-                  <button
+                  <Link
                     className="rounded-lg bg-red-700 text-white text-sm px-4 py-2 hover:bg-red-800 whitespace-nowrap"
-                    onClick={() => setPid(r.id)}
+                    href={`/product/${r.id}`}
                   >
                     Ver detalle
-                  </button>
+                  </Link>
                 </div>
               </article>
             );
