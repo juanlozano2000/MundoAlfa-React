@@ -32,6 +32,7 @@ export default function Loading() {
               <div className="h-9 w-40 bg-gray-200 rounded" />
               <div className="h-4 w-10 bg-gray-200 rounded" />
             </div>
+            
 
             <div className="mt-3 space-y-1.5">
               <div className="h-4 w-48 bg-gray-200 rounded" />
