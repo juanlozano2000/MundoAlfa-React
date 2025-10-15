@@ -69,7 +69,7 @@ export default function ItemDetails({ product }: { product: Product }) {
 
           {/* Resto de la información */}
           <div className="flex-1 mt-4 md:mt-0">
-            <div className="flex items-baseline gap-2">
+            {/* <div className="flex items-baseline gap-2">
               {hasPrice ? (
                 <>
                   <span className="text-3xl md:text-4xl font-bold tracking-tight">
@@ -82,7 +82,7 @@ export default function ItemDetails({ product }: { product: Product }) {
               ) : (
                 <span className="text-xl text-muted-foreground">—</span>
               )}
-            </div>
+            </div> */}
 
             <div className="mt-3 space-y-1.5">
               <p className="text-sm text-neutral-600">

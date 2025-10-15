@@ -125,7 +125,7 @@ export default function Explorar() {
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold">{r.base_name}</h3>
                     <p className="text-sm text-neutral-600">Marca: {r.brand ?? "—"}</p>
-                    <p className="mt-1 text-sm"><b>Precio:</b> {price}</p>
+                    {/* <p className="mt-1 text-sm"><b>Precio:</b> {price}</p> */}
                     <p className="mt-1 text-sm"><b>Modelo:</b> {r.model ?? "—"}</p>
                     <p className="mt-1 text-sm"><b>Categoría:</b> {r.category ?? "—"}</p>
                   </div>
